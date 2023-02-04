@@ -10,7 +10,7 @@ entity echo_counter is
 		clk	: in std_logic;
 		enable  : in std_logic;
 		reset	  : in std_logic;
-		counter_out  : out std_logic_vector (N-1 downto 0) := (others => '0')
+		cnt_out  : out std_logic_vector (N-1 downto 0) := (others => '0')
 	);
 
 end entity;
@@ -29,5 +29,5 @@ begin
 				end if;
 			end if;			
 	end process;
-	counter_out <= cnt;
+	cnt_out <= cnt;
 end counter;

@@ -50,7 +50,7 @@ component distance_calcualtion is
 	generic ( N : integer := 21);
 	port (
 		echo : in std_logic; 
-		echo_counter_out  : in std_logic_vector (N-1 downto 0);
+		echo_cnt  : in std_logic_vector (N-1 downto 0);
 		distance: out std_logic_vector(8 downto 0) := (others => '0')
 	);
 end component;
@@ -69,7 +69,7 @@ component echo_counter is
 		clk	: in std_logic;
 		enable  : in std_logic;
 		reset	  : in std_logic;
-		counter_out  : out std_logic_vector (N-1 downto 0)
+		cnt_out  : out std_logic_vector (N-1 downto 0)
 	);
 
 end component;
