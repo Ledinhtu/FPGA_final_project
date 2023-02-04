@@ -18,12 +18,12 @@ end hcsr04_lcd;
 
 architecture top_entity of hcsr04_lcd is
 
-component test_input is
-	port (
-		clk : in std_logic;
-		bint: out std_logic_vector(8 downto 0) := (others => '0')		
-	);
-end component;
+--component test_input is
+--	port (
+--		clk : in std_logic;
+--		bint: out std_logic_vector(8 downto 0) := (others => '0')		
+--	);
+--end component;
 
 component conv_bcd is
  port(
