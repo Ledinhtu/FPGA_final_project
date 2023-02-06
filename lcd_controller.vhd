@@ -70,7 +70,7 @@ begin
 			lcd_data_out <= display_data(ptr);
 			if(clk_count = 5)	then lcd_en <= '1';	-- wait min 60ns
 			elsif(clk_count = 30)	then lcd_en <= '0';	-- wait 500ms (min 450ns) 
-			elsif(clk_count = 55)	then clk_count <= 0;	-- wait 500ms ---- min (1000 - 450 - 60) = 490 ns 
+			elsif(clk_count = 2000)	then clk_count <= 0;	-- wait 37us (min 37us)
 				if ptr = 15 then	
 					state <= lcd_init;
 					ptr <= 4;		-- set ddram address = 00
