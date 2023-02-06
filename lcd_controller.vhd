@@ -6,7 +6,7 @@ use ieee.std_logic_unsigned.all;
 
 entity lcd_controller is
 port(
-	clk : in std_logic; --system cloc k
+	clk : in std_logic; -- 50MHz
 	----- d = d2d1d0
 	d2: in std_logic_vector(7 downto 0) := (others => '0');
 	d1: in std_logic_vector(7 downto 0) := (others => '0');
@@ -24,7 +24,7 @@ architecture controller of lcd_controller is
 	constant lcd_cmd: lcd_cmd_array := (
 												0	=>	x"38",	--function set
 												1	=>	x"0c",	--display on/off control
-												2	=>	x"01",	--clear display
+												2	=>	x"01",	--clear display (1.52ms)		
 												3	=>	x"06",	--entry mode set
 												4	=>	x"80"		--set ddram address
 												);
@@ -32,7 +32,7 @@ architecture controller of lcd_controller is
 	signal display_data : lcd_data_array := (x"44",x"49",x"53",x"54",x"41",x"4e",x"43",x"45",x"3a",x"20",x"43",x"43",x"43",x"20",x"43",x"4d"); --distance: d2d1d0 cm----
 												
 	signal ptr: integer range 0 to 15 := 0;
-	signal clk_count : integer range 0 to 2500000:= 0; --event counter for timing
+	signal clk_count : integer range 0 to 2500000:= 0; 
 begin
 	display_data(10) <= d2 + x"30";
 	display_data(11) <= d1 + x"30";
@@ -46,7 +46,7 @@ begin
 			if(clk_count < 2500000) then --wait 50 ms
 				clk_count <= clk_count + 1;
 				state <= lcd_power_up;
-			else --power-up complete
+			else -- power-up complete
 				clk_count <= 0;
 				state <= lcd_init;
 			end if;
@@ -54,10 +54,10 @@ begin
 			lcd_rs <= '0';
 			lcd_data_out <= lcd_cmd(ptr);
 			clk_count <= clk_count + 1;
-			if(clk_count = 10)	then lcd_en <= '1';
-			elsif(clk_count = 30)	then lcd_en <= '0';
-			elsif(clk_count = 164000)	then clk_count <= 0;
-				if ptr = 4 then	
+			if(clk_count = 5)	then lcd_en <= '1';	-- wait 100ns (min 60ns)
+			elsif(clk_count = 30)	then lcd_en <= '0';	-- wait 500ms (min 450ns) 
+			elsif(clk_count = 76030)	then clk_count <= 0;	-- wait min 1.52ms (cmd 'clear display')
+				if ptr = 4 then			-- send init cmd complete
 					state <= lcd_display;
 					ptr <= 0;
 				else					
@@ -68,12 +68,12 @@ begin
 			lcd_rs <= '1';
 			clk_count <= clk_count + 1;
 			lcd_data_out <= display_data(ptr);
-			if(clk_count = 10)	then lcd_en <= '1';
-			elsif(clk_count = 30)	then lcd_en <= '0';
-			elsif(clk_count = 2000)	then clk_count <= 0;
+			if(clk_count = 5)	then lcd_en <= '1';	-- wait min 60ns
+			elsif(clk_count = 30)	then lcd_en <= '0';	-- wait 500ms (min 450ns) 
+			elsif(clk_count = 55)	then clk_count <= 0;	-- wait 500ms ---- min (1000 - 450 - 60) = 490 ns 
 				if ptr = 15 then	
 					state <= lcd_init;
-					ptr <= 4;
+					ptr <= 4;		-- set ddram address = 00
 				else					
 					ptr <= ptr + 1;
 				end if;
