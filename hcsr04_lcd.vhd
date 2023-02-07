@@ -6,7 +6,7 @@ use ieee.std_logic_1164.all;
 entity hcsr04_lcd is
 generic ( max_bit_counter : integer := 21);
 port(
-	fpga_clk : in std_logic; 
+	fpga_clk : in std_logic; -- 50MHz
 	------------------
 	echo : in std_logic;
 	trig : out std_logic;
@@ -87,7 +87,7 @@ trig <= temp_trigger;
 
 U0: trigger_generator port map(fpga_clk, temp_trigger);
 
-U1: echo_counter generic map (max_bit_counter) port map(fpga_clk, echo, not temp_trigger, temp_counter_out);
+U1: echo_counter generic map (max_bit_counter) port map(fpga_clk, echo, temp_trigger, temp_counter_out);
 
 U2: distance_calcualtion generic map (max_bit_counter) port map(echo, temp_counter_out, temp_bin);
 

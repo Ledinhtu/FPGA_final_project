@@ -1,4 +1,4 @@
------------------- Entity: trigger_generator ------------
+------------------ Entity: distance_calcualtion ------------
 
 library ieee;
 use ieee.std_logic_1164.all;
@@ -26,7 +26,7 @@ begin
 				-- -> Result = y(chu ki)*20/1000*58 = y(chu ki) / 2900. ~ y.3(chu ki) /(2^13)
 			multiplier := echo_cnt * "11"; -- nhan voi 3
 				
-			if (multiplier (22 downto 13) > "00111000010") then
+			if (multiplier (22 downto 13) > "00111000010") then  -- 450cm
 				distance <="111111111";
 			else
 				distance <=  multiplier (21 downto 13);
